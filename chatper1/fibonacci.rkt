@@ -6,10 +6,10 @@
 
 (display (fib 10))
 
-; 尾递归版本
+; 尾递归版本，序列从0开始
 (define (fib-tail n)
     (define (fib-iter n acc1 acc2)
-      (cond ((and (< n 0) (= n 0)) 0)
+      (cond ((or (< n 0) (= n 0)) 0)
             ((= n 1) acc1)
             (else (fib-iter (- n 1) acc2 (+ acc1 acc2)))))
     (fib-iter n 0 1)
