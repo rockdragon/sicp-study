@@ -10,4 +10,4 @@
 
 (/ 4 6)
 
-(string-append "Hello," "world")
+(substring (string-append "Hello," "world") 6)
