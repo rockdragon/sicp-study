@@ -11,3 +11,6 @@
 (/ 4 6)
 
 (substring (string-append "Hello," "world") 6)
+
+; cons
+(cons 1 (cons 2 (cons 3 empty)))
