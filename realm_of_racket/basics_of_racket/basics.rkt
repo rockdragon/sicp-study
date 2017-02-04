@@ -18,3 +18,14 @@
 (list 'a 'b 'c)
 ; '()
 '(a b c)
+
+; list functions
+(define list '(a b c))
+(first list)
+(rest list)
+(car list)
+(cdr list)
+
+; nested list
+'(cat '(monkey donkey) duck)
+'('(peas carrots tomatoes) '(pork beef chicken))
