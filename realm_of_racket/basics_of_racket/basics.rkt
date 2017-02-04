@@ -13,4 +13,8 @@
 (substring (string-append "Hello," "world") 6)
 
 ; cons
-(cons 1 (cons 2 (cons 3 empty)))
+(cons 'a (cons 'b (cons 'c empty)))
+; list
+(list 'a 'b 'c)
+; '()
+'(a b c)
