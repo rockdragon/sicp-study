@@ -10,3 +10,10 @@
 (student-name joe)
 (student-id# joe)
 (student-dorm joe)
+
+; members: point-x point-y point?
+(struct point (x y) #:transparent)
+
+; pythagorean theorem
+(define (distance-to-origin p)
+    (sqrt (+ (sqrt (point-x p)) (sqrt (point-y p)))))
