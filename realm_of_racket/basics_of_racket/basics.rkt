@@ -1,16 +1,19 @@
 #lang racket
 
 (symbol=? 'foo 'foo)
-
 (expt 2 10)
-
 (sqrt -1.0)
-
 (* (sqrt -1) (sqrt -1))
-
 (/ 4 6)
-
 (substring (string-append "Hello," "world") 6)
+
+; custom error
+(error 'heck "looks like something got wrong")
+
+; division
+(remainder 13 4)
+(quotient 13 4)
+(/ 13 4)
 
 ; cons
 (cons 'a (cons 'b (cons 'c empty)))
