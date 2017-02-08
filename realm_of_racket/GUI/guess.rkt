@@ -1,7 +1,7 @@
 #lang racket
 (require 2htdp/universe 2htdp/image)
 
-(struct interval (small big))
+(struct interval (small big) #:transparent)
 
 (define WIDTH  480)
 (define HEIGHT 240)
@@ -52,7 +52,9 @@
   (overlay (text (number->string (guess w)) SIZE COLOR) MT-SC))
 
 (define (render-last-scene w)
-  (overlay (text "End" SIZE COLOR) MT-SC))
+  (overlay (text
+            (string-append "End:" (number->string (interval-small w)))
+            SIZE COLOR) MT-SC))
 
 (define (single? w)
   (= (interval-small w) (interval-big w)))
