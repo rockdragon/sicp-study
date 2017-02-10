@@ -42,6 +42,40 @@
   (snake (snake-dir sn)
          (cons (next-head sn) (all-but-last (snake-segs sn)))))
 
+(define (all-but-last segs)
+  (cond [(empty? (rest segs)) empty]
+        [else (cons (first segs) (all-but-last (rest segs)))]
+        ))
+
+(define (posn-move p dx dy)
+  (posn (+ (posn-x p) dx)
+        (+ (posn-y p) dy)))
+
+(define (next-head sn)
+  (define head (snake-head sn))
+  (define dir (snake-dir sn))
+  (cond [(string=? dir "up") (posn-move head 0 -1)]
+        [(string=? dir "down") (posn-move head 0 1)]
+        [(string=? dir "left") (posn-move head -1 0)]
+        [(string=? dir "right") (posn-move head 1 0)]
+  ))
+
+(define (age-goo goos)
+  (rot (renew goos)))
+
+(define (rot goos)
+  (cond [(empty? goos) empty]
+        [else (cons (decay (first goos)) (rot (rest goos)))]))
+
+(define (renew goos)
+  (cond [(empty? goos) empty]
+        [(rotteen? (first goos))
+         (cons (fresh-foo) (renew (rest goos)))]
+        [else
+         (cons (first goos) (renew (rest goos)))]))
+
+
+
 (define (start-snake)
   (big-bang (pit (snake "right" (list (posn 1 1)))
                  (list (fresh-goo)
