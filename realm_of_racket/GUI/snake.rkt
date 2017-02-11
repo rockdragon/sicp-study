@@ -7,12 +7,27 @@
 (struct posn (x y))
 (struct goo (loc expire))
 
+(define (posn=? p1 p2)
+  (and (= (posn-x p1) (posn-x p2))
+     (= (posn-y p1) (posn-y p2))))
+(define (snake-head sn)
+  (first (snake-segs sn)))
+(define (snake-body sn)
+  (rest (snake-segs sn)))
+(define (snake-tail sn)
+  (last (snake-segs sn)))
+(define (snake-change-dir sn d)
+  (snake d (snake-segs sn)))
+(defein (fresh-goo)
+  (goo (posn (add1 (random (sub1 SIZE)))
+             (add1 (ld (sub1 SIZE))))
+             EXPIRATION-TIME))
+
+
 (define TICK-RATE 100)
 (define WIDTH  480)
 (define HEIGHT 480)
-
-(defein (fresh-goo)
-  '())
+(define EXPIRATION-TIME 2000)
 
 (define (next-pit w)
   (define snake (pit-snake w))
@@ -32,7 +47,7 @@
   (posn=? s (goo-loc g)))
 
 (define (eat goos goo-to-eat)
-  (cons (fresh-go) (remove goo-to-eat goos)))
+  (cons (fresh-goo) (remove goo-to-eat goos)))
 
 (define (grow sn)
   (snake (snake-dir sn)
@@ -74,7 +89,89 @@
         [else
          (cons (first goos) (renew (rest goos)))]))
 
+(define (rotten? g)
+  (zero? (goo-expire g)))
 
+
+(define (direct-snake w ke)
+  (cond [(dir? ke) (world-change-dir w ke)]
+        [else w]))
+
+(define (dir? x)
+  (or (key=? x "up")
+      (key=? x "down")
+      (key=? x "left")
+      (key=? x "right")))
+
+(define (world-change-dir w d)
+  (define (the-snake (pit-snake w)))
+  (cond [(and (opposite-dir? (snake-dir the-snake) d)
+        (cons? (rest (snake-segs the-snake))))
+         (stop-with w)]
+        [else
+         (pit (snake-change-dir the-snake d) (pit-goos w))]))
+
+;(define snake-going-left (snake "left" (list (posn 2 18))))
+;(define plain-world (pit snake-going-left empty))
+
+(define (opposite-dir? d1 d2)
+  (cond [(string=? d1 "up") (string=? d2 "down")]
+        [(string=? d1 "down") (string=? d2 "up")]
+        [(string=? d1 "left") (string=? d2 "right")]
+        [(string=? d1 "right") (string=? d2 "left")]))
+
+;;;; rendering
+(define (render-pit w)
+  (snake+scene (pit-snake w)
+               (goo-list_scene (pit-goos w) MT-SCENE)))
+
+(define (snake+scene snake scene)
+  (define snake-body-scene
+    (img-list +scene (snake-body snake) SEG-IMG scene))
+  (define dir (snake-dir snake))
+  (img+scene (snake-head snake)
+             (cond [(string=? "up" dir) HEAD-UP-IMG]
+                   [(string=? "down" dir) HEAD-DOWN-IMG]
+                   [(string=? "left" dir) HEAD-LEFT-IMG]
+                   [(string=? "right" dir) HEAD-RIGHT-IMG])
+             snake-body-scene))
+
+(define (img-list+scene posns img scene)
+  (cond [(empty? posns) scene]
+        [else (img+scene
+               (first posns)
+               img
+               (img-list+scene (rest posns) img scene))]))
+
+(define (img+scene posn img scene)
+  (place-image img
+               (* (posn-x posn) SEG-SIZE)
+               (* (posn-y posn) SEG-SIZE)
+               scene))
+
+(define (goo-list+scene goos scene)
+  (define (get-posns-from-goo goos)
+    (cond [(empty? goos) empty]
+          [else (cons (goo-loc (first goos))
+                      (get-posns-from-goo (rest goos)))]))
+  (img-list+scene (get-posns-from-goo goos) GOO-IMG scene))
+
+(define (dead? w)
+  (define snake (pit-snake w))
+  (or (self-colliding? snake) (wall-colliding? snake)))
+
+(define (render-end w)
+  (overlay (text "Game Over" ENGGAME-TEXT-SIZE "black")
+           (render-snake-world w)))
+
+(define (self-colliding? snake)
+  (cons? (member (snake-head snake) (snake-body snake))))
+
+(define (wall-colliding? snake)
+  (define x (posn-x (snake-head snake)))
+  (define y (posn-y (snake-head snake)))
+  (or (= 0 x) (= x SIZE)
+      (= 0 y) (= y SIZE)))
 
 (define (start-snake)
   (big-bang (pit (snake "right" (list (posn 1 1)))
@@ -88,4 +185,3 @@
             (on-key direct-snake)
             (to-draw render-pit)
             (stop-when dead? render-end)))
-            
