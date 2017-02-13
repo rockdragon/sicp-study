@@ -32,3 +32,6 @@
 ; nested list
 '(cat '(monkey donkey) duck)
 '('(peas carrots tomatoes) '(pork beef chicken))
+
+; nothing
+(void)
