@@ -22,3 +22,11 @@
   (builder 0))
 (my-build-list 10 (lambda (x) (+ x 1)))
 ; '(1 2 3 4 5 6 7 8 9 10)
+
+; apply
+(define (my-sum lst) (apply + lst))
+(my-sum '(1 3 4 7 9))
+; 24
+(define (my-max lst) (apply max lst))
+(my-max '(3 1 5 2 6 4))
+;6
