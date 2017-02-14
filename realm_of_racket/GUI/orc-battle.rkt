@@ -4,7 +4,7 @@
 (require 2htdp/universe 2htdp/image)
 
 ; structures
-(struct orc-world (player lom attack#) #:transparent)
+(struct orc-world (player lom attack# target) #:mutable #:transparent)
 (struct monster ([health #:mutable]) #:transparent)
 (struct orc monster (club) #:transparent)
 (struct hydra monster () #:transparent)
@@ -20,6 +20,10 @@
 (define MONSTER-HEALTH0 10)
 (define DAMAGE 2)
 (define HEALTH 2)
+(define LOSE "LOSE")
+(define WIN "WIN")
+(define PER-ROW 4)
+(define MONSTER# 12)
 
 ; functions
 (define (interval+ v delta mx)
@@ -36,6 +40,29 @@
 (define player-strength+ 
   (player-update! set-player-strength! player-strength MAX-STRENGTH))
 
+(define (start)
+  (big-bang (initialize-orc-world)
+            (on-key player-acts-on-monsters)
+            (to-draw render-orc-battle)
+            (stop-when end-of-orc-battle? render-the-end)))
+
+(define (initialize-orc-world)
+  (define player0 (initialize-player))
+  (define lom0 (initialize-monster))
+  (orc-world player0 lom0 (random-number-of-attacks player0) 0))
+
+(define (end-of-orc-battle? w)
+  (or (win? w) (lose? w)))
+
+(define (win? w)
+  (all-dead? (orc-world-lom w)))
+
+(define (lose? w)
+  (player-dead? (orc-world-player w)))
+
+(define (render-the-end w)
+  (render-orcß-world w #f (message (if (lose? w) LOSE WIN))))
+
 
 ; invocation
 (check-equal? (let ([p (player 1 2 3)])
@@ -50,7 +77,8 @@
 (define player3 player1)
 (set-player-agility! player3 666)
 (define players (list player1 player2 player3))
-(equal? (first players) (third players))
 
-(check-equal? (first players) (third players))
+(define lom (list (orc 9 3) (orc 9 4) (orc 9 1)))
+(define owl (orc-world 'some-player lom 2 0))
+(list-ref (orc-world-lom owl) 2)
 
