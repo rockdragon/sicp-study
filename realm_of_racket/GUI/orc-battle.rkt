@@ -63,6 +63,21 @@
 (define (render-the-end w)
   (render-orcß-world w #f (message (if (lose? w) LOSE WIN))))
 
+(define (player-acts-on-monster w k)
+  (cond
+    [(zero? (orc-world-attack# w)) (void)]
+    [(key=? "s" k) (stab w)]
+    [(key=? "h" k) (heal w)]
+    [(key=? "f" k) (flail w)]
+    [(key=? "e" k) (end-turn w)]
+    [(key=? "n" k) (initialize-orc-world)]
+    [(key=? "right" k) (move-target w +1)]
+    [(key=? "left" k) (move-target w -1)]
+    [(key=? "down" k) (move-target w (+ PER-ROW))]
+    [(key=? "up" k) (move-target w (- PER-ROW))])
+  (give-monster-turn-if-attack#=0 w)
+  )
+
 
 ; invocation
 (check-equal? (let ([p (player 1 2 3)])
