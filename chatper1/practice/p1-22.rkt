@@ -30,4 +30,4 @@
   (display " total: ")  
   (display (string-append(number->string elapsed-time) " seconds")))
 
-(search-for-primes 1000000)
+(search-for-primes 100000000)
