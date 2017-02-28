@@ -23,11 +23,11 @@
 
 (define (lst n) (lambda () (build-list n (lambda (i) i))))
 
-(define lst_n (memoize (lst 100000)))
+(define lst-n (memoize (lst 100000)))
 
 
-(timer lst_n)
-(timer lst_n)
-(timer lst_n)
+(timer lst-n)
+(timer lst-n)
+(timer lst-n)
 
 
